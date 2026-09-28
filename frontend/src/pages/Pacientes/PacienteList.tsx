@@ -1,8 +1,9 @@
 import { IonButton, IonButtons, IonCard, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonMenuButton, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import ExploreContainer from '../../components/ExploreContainer';
-import { add, closeSharp, pencil, search } from 'ionicons/icons';
+import { add, closeSharp, navigate, pencil, search, searchCircle } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
+import { removePaciente, savePaciente, searchPaciente } from './PacienteApi';
 
 
 const PacienteList: React.FC = () => {
@@ -10,34 +11,40 @@ const PacienteList: React.FC = () => {
   const { name = '' } = useParams<{ name: string; }>();
 
   const [pacientes, setPacientes] = useState<any>([]);
+  const navigate = useNavigate();
 
   useEffect(()=>{
     search();
   }, []);
 
   const search = () =>{
-    const datosDeEjemplo = [
-        {
-            id: '1',
-            nombre: 'Jose Sebastian',
-            appaterno: 'Fernandez',
-            apmaterno: 'Pari',
-            celular: '312654987',
-            direccion: 'Av Siempre Viva',
-            estadocita: 'En curso'
-        },
-        {
-            id: '2',
-            nombre: 'Jorge Andre',
-            appaterno: 'Gamarra',
-            apmaterno: 'Santiesteban',
-            celular: '123456789',
-            direccion: 'Jr Union',
-            estadocita: 'Sin cita'
-        }
-    ]
-    setPacientes(datosDeEjemplo)
+    let result = searchPaciente();
+    setPacientes(result);
   }
+
+  const remove = (id:string) =>{
+    removePaciente(id);
+    search();
+  }
+
+  const addPaciente = () =>{
+    navigate('/folder/pacientes/new');
+  }
+
+  
+  const pruebaLocalStorage=() =>{
+    const ejemplo = {
+      id: '1',
+      nombre: 'Jose Sebastian',
+      appaterno: 'Fernandez',
+      apmaterno: 'Pari',
+      celular: '312654987',
+      direccion: 'Av Siempre Viva',
+      estadocita: 'En curso'
+    }
+    savePaciente(ejemplo);  
+  }
+
 
   return (
     <IonPage>
@@ -62,7 +69,7 @@ const PacienteList: React.FC = () => {
                 <IonTitle >Gestión de Clientes</IonTitle>
 
                 <IonItem>
-                    <IonButton color={'primary'} fill='solid' slot='end' size='default'>
+                    <IonButton onClick={addPaciente} color={'primary'} fill='solid' slot='end' size='default'>
                         <IonIcon icon={add}/>
                         Agregar Paciente
                     </IonButton>
@@ -96,7 +103,7 @@ const PacienteList: React.FC = () => {
                             <IonButton color={'primary'} fill='clear'>
                                 <IonIcon icon={pencil} slot='icon-only'/>
                             </IonButton>
-                            <IonButton color={'danger'} fill='clear'>
+                            <IonButton color={'danger'} fill='clear' onClick={() => remove(pacientes.id)}>
                                 <IonIcon icon={closeSharp} slot='icon-only'/>
                             </IonButton>
                         </IonCol>
@@ -106,7 +113,9 @@ const PacienteList: React.FC = () => {
                 </IonGrid>
             </IonCard>
 
-
+            <IonButton onClick={pruebaLocalStorage} color={'danger'} fill='clear'>
+              PRUEBA LOCAL STORAGE
+            </IonButton>            
     </IonContent>
     </IonPage>
   );

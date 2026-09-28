@@ -34,6 +34,7 @@ import '@ionic/react/css/palettes/dark.css';
 /* Theme variables */
 import './theme/variables.css';
 import PacienteList from './pages/Pacientes/PacienteList';
+import PacienteEdit from './pages/Pacientes/PacienteEdit';
 
 setupIonicReact();
 
@@ -48,6 +49,10 @@ const App: React.FC = () => {
             
             <Route path='/folder/:Pacientes' element={<PacienteList/>}>
               <PacienteList></PacienteList>
+            </Route>
+            
+            <Route path='/folder/:Pacientes/:id' element={<PacienteEdit/>}>
+              <PacienteEdit></PacienteEdit>
             </Route>
 
           </IonRouterOutlet>
